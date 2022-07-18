@@ -1,0 +1,16 @@
+{
+    "name": "Mealie Recipe Sender",
+    "description": "Easily import recipes into mealie",
+    "version": "1.0",
+    "manifest_version": 3,
+    "action": {
+        "default_popup": "popup.html"
+    },
+    "host_permissions": [
+        "http://docker.home:9920/*"
+    ],
+    "permissions": [
+        "tabs",
+        "storage"
+    ]
+}
