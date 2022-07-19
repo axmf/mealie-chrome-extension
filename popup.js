@@ -26,7 +26,8 @@ function getToken() {
     myHeaders.append("Content-Type", "application/x-www-form-urlencoded");
 
     var urlencoded = new URLSearchParams();
-
+    urlencoded.append("username", "mail@gmail.com");
+    urlencoded.append("password", "MyPassword");
 
     var requestOptions = {
         method: 'POST',
@@ -81,7 +82,5 @@ function importRecipe() {
             .then(response => response.text())
             .then(result => console.log(result))
             .catch(error => console.log('error', error));
-    });
-
-   
+    });  
 }
