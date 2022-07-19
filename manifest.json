@@ -3,12 +3,16 @@
     "description": "Easily import recipes into mealie",
     "version": "1.0",
     "manifest_version": 3,
+    "background": {
+        "service_worker": "background.js"
+    },
     "action": {
         "default_popup": "popup.html"
     },
     "host_permissions": [
         "http://docker.home:9920/*"
     ],
+    "options_page": "options.html",
     "permissions": [
         "tabs",
         "storage"

@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link rel="stylesheet" href="button.css">
+  </head>
+  <body>
+    <label for="mealieUrl">Mealie URL: </label>
+    <input id="mealieUrl" placeholder="https://mealie.home:9000/"/>
+    <label for="includeTags" >Import tags:</label>
+    <input type="checkbox" id="includeTags" value="1" />
+    
+    <hr>
+    <p>Enter your username and password to get the token</p>
+    <p>This will send your unencoded password to get a token</p>
+    <label for="usermame">Username:</label>
+    <input id="username" type="text" placeholder="Username">
+    <label for="password">Password:</label>
+    <input id="password" type="password" placeholder="Password">
+    <input id ="getTokenButton" type="submit" value="getToken">
+    <hr>
+    <p>Or you can just paste the token</p>
+    <label for="token">Token: </label>
+    <input id="token"/>
+    <script src="options.js"></script>
+  </body>
+</html>
