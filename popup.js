@@ -22,9 +22,9 @@ function importRecipe() {
 
     //Restore includeTags from storage
     var includeTags;
-    // chrome.storage.sync.get("includeTags", function (includeTagsString) {
-    //     includeTags = includeTagsString.includeTags;
-    // });
+    chrome.storage.sync.get("includeTags", function (includeTagsString) {
+        includeTags = includeTagsString.includeTags;
+    });
 
     chrome.tabs.query({ currentWindow: true, active: true }, function (tabs) {
         var urlToImport;
@@ -37,10 +37,9 @@ function importRecipe() {
         myHeaders.append("accept", "application/json");
         myHeaders.append("Content-Type", "application/json");
 
-        //TODO use includeTags
         var raw = JSON.stringify({
             "url": urlToImport,
-            "includeTags": true
+            "includeTags": includeTags
         });
 
         var requestOptions = {
@@ -53,7 +52,6 @@ function importRecipe() {
         console.log("Request options: " + JSON.stringify(requestOptions));
         var status = document.getElementById("status");
         status.innerHTML = "Importing recipe...";
-        console.log("mealieUrl: " + mealieUrl);
         fetch(mealieUrl + "/api/recipes/create-url", requestOptions)
             .then(response => {
                 if (!response.ok) {
@@ -63,7 +61,8 @@ function importRecipe() {
             })
             .then(result => {
                 console.log("Result: " + result);
-                recipeUrl = mealieUrl + "/recipe/" + result.substring(1, result.length - 1);;
+                recipeUrl = mealieUrl + "/recipe/" + result;
+                // recipeUrl = mealieUrl + "/recipe/" + result.substring(1, result.length - 1);
                 status.innerHTML = "Recipe imported. <a href='" + recipeUrl + "'>Open recipe in mealie</a>";
                 status.addEventListener("click", function () {
                     chrome.tabs.create({ url: recipeUrl });
