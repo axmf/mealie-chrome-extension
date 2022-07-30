@@ -1,5 +1,46 @@
 console.log("Popup.js loaded");
 
+//TODO find other ways to detect if the recipe can be parsed
+
+//Get ld+json from the page
+function getLdJson() {
+    var ldJson = document.getElementsByTagName("script");
+    for (var i = 0; i < ldJson.length; i++) {
+        if (ldJson[i].type == "application/ld+json") {
+            //Check that it has a recipeCategory
+            if (ldJson[i].innerHTML.includes("recipeCategory")) {
+                return true;
+            }
+        }
+    }
+    return false;
+}
+
+function importRecipeSchema() {
+    var recipeTags = document.getElementsByClassName("recipe");
+    if (recipeTags.length > 0) {
+        return true;
+        var recipe = recipeTags[0];
+        var recipeSchema = recipe.innerHTML;
+        var recipeSchema = recipeSchema.replace(/\n/g, "");
+        var recipeSchema = recipeSchema.replace(/\t/g, "");
+        var recipeSchema = recipeSchema.replace(/\r/g, "");
+        var recipeSchema = recipeSchema.replace(/\s/g, "");
+        var recipeSchema = recipeSchema.replace(/\s+/g, "");
+        var recipeSchema = recipeSchema.replace(/<\/?[^>]+(>|$)/g, "");
+        var recipeSchema = recipeSchema.replace(/\s+/g, "");
+    }
+    return false;
+}
+
+
+//Display a message if there are no recipe tags
+function displayMessage() {
+    var message = document.getElementById("message");
+    message.innerHTML = "No recipe tags found";
+    message.style.display = "block";
+}
+
 function importRecipe() {
     //Restore saved preferences
     var token;
@@ -19,6 +60,7 @@ function importRecipe() {
         includeTags = includeTagsString.includeTags;
     });
 
+    //TODO can we do this with active tab only?
     chrome.tabs.query({ currentWindow: true, active: true }, function (tabs) {
         var urlToImport;
         urlToImport = tabs[0].url;
@@ -50,13 +92,17 @@ function importRecipe() {
             .then(response => response.text())
             .then(result => {
                 console.log("Result: " + result);
-                status.innerHTML = "Recipe imported with id: " + result;
+                recipeUrl = mealieUrl + "/recipe/" + result.substring(1, result.length - 1);;
+                status.innerHTML = "Recipe imported. <a href='" + recipeUrl + "'>Open recipe in mealie</a>";
+                status.addEventListener("click", function () {
+                    chrome.tabs.create({ url: recipeUrl });
+                });
                 status.style.backgroundColor = "green";
             })
             .then(function () {
                 setTimeout(function () {
                     window.close();
-                }, 3000);
+                }, 5000);
             })
             .catch(error => {
                 status.innerHTML = "Error importing recipe: " + error;
@@ -65,5 +111,10 @@ function importRecipe() {
             });
     });
 }
+
+// if(!getLdJson()) {
+    // console.log("No recipe tags found");
+    // displayMessage();
+// }
 
 importRecipe();
