@@ -1,23 +1,30 @@
 console.log("Popup.js loaded");
 
-function importRecipe() {
-    //Restore saved preferences
-    var token;
+function getSavedToken() {
     chrome.storage.sync.get("accessToken", function (accessTokenString) {
         var json = JSON.parse(accessTokenString.accessToken);
         token = json["access_token"];
     });
+}
 
-    //Restore mealie url from storage
-    var mealieUrl;
+function getSavedMealieUrl() {
     chrome.storage.sync.get("mealieUrl", function (mealieUrlString) {
         mealieUrl = mealieUrlString.mealieUrl;
+        console.log("Mealie url: " + mealieUrl);
     });
+}
+
+function importRecipe() {
+    //Restore saved preferences
+    token = getSavedToken();
+    //Restore mealie url from storage
+    mealieUrl = getSavedMealieUrl();
+    
     //Restore includeTags from storage
     var includeTags;
-    chrome.storage.sync.get("includeTags", function (includeTagsString) {
-        includeTags = includeTagsString.includeTags;
-    });
+    // chrome.storage.sync.get("includeTags", function (includeTagsString) {
+    //     includeTags = includeTagsString.includeTags;
+    // });
 
     chrome.tabs.query({ currentWindow: true, active: true }, function (tabs) {
         var urlToImport;
@@ -46,6 +53,7 @@ function importRecipe() {
         console.log("Request options: " + JSON.stringify(requestOptions));
         var status = document.getElementById("status");
         status.innerHTML = "Importing recipe...";
+        console.log("mealieUrl: " + mealieUrl);
         fetch(mealieUrl + "/api/recipes/create-url", requestOptions)
             .then(response => {
                 if (!response.ok) {
@@ -70,5 +78,10 @@ function importRecipe() {
             });
     });
 }
+
+//Restore saved preferences
+var token = getSavedToken();
+//Restore mealie url from storage
+var mealieUrl = getSavedMealieUrl();
 
 importRecipe();
