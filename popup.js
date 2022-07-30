@@ -19,7 +19,7 @@ function importRecipe() {
     token = getSavedToken();
     //Restore mealie url from storage
     mealieUrl = getSavedMealieUrl();
-    
+
     //Restore includeTags from storage
     var includeTags;
     // chrome.storage.sync.get("includeTags", function (includeTagsString) {
@@ -63,13 +63,17 @@ function importRecipe() {
             })
             .then(result => {
                 console.log("Result: " + result);
-                status.innerHTML = "Recipe imported with id: " + result;
+                recipeUrl = mealieUrl + "/recipe/" + result.substring(1, result.length - 1);;
+                status.innerHTML = "Recipe imported. <a href='" + recipeUrl + "'>Open recipe in mealie</a>";
+                status.addEventListener("click", function () {
+                    chrome.tabs.create({ url: recipeUrl });
+                });
                 status.style.backgroundColor = "green";
             })
             .then(function () {
                 setTimeout(function () {
                     window.close();
-                }, 3000);
+                }, 5000);
             })
             .catch(error => {
                 status.innerHTML = "Error importing recipe: " + error;
