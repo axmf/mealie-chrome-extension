@@ -47,7 +47,12 @@ function importRecipe() {
         var status = document.getElementById("status");
         status.innerHTML = "Importing recipe...";
         fetch(mealieUrl + "/api/recipes/create-url", requestOptions)
-            .then(response => response.text())
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(response.statusText);
+                }
+                return response.json();
+            })
             .then(result => {
                 console.log("Result: " + result);
                 status.innerHTML = "Recipe imported with id: " + result;
